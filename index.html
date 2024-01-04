@@ -9,14 +9,6 @@
     <meta name="description" content="Compare Docs">
     
     <meta name="theme-color" content="#000000"><!-- Chrome, Firefox OS and Opera -->
-<!--     <meta name="msapplication-navbutton-color" content="#000000"><!-- Windows Phone -->
-<!--     <meta name="apple-mobile-web-app-capable" content="yes"><!-- iOS Safari -->
-<!--     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><!-- iOS Safari -->
-<!--     <meta name="mobile-web-app-capable" content="yes"><!-- Add to homescreen for Chrome on Android -->
-<!--     <link rel="icon" sizes="192x192" href="/tools/android-icon-192x192.png"><!-- Add to homescreen for Chrome on Android -->
-<!--     <meta name="apple-mobile-web-app-title" content="Push Messaging and Notifications Sample"><!-- Add to homescreen for Safari on iOS -->
-<!--     <link rel="apple-touch-icon-precomposed" href="/tools/apple-touch-icon-precomposed.png"> -->
-<!--     <meta name="msapplication-TileImage" content="/tools/ms-icon-144x144-precomposed.png"><!-- Tile icon for Win8 (144x144 + tile color) -->
     <meta name="msapplication-TileColor" content="#3372DF">
     <link rel="icon" href="https://github.com/asadal/comparedocs/raw/main/images/favicon.ico" type="image/x-icon">
     <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' />
@@ -33,6 +25,57 @@
           background-color: #ffc6c6;
       }
     </style>
+    <script src="https://github.com/wepplication/tools/blob/master/js/include.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://github.com/wepplication/tools/blob/master/js/common.js"></script>
+    
+    <script src="https://github.com/wepplication/tools/blob/master/js/diff_match_patch.js"></script>
+    <script src="https://github.com/wepplication/tools/blob/master/js/jquery.pretty-text-diff.min.js"></script>
+    <script src="https://github.com/wepplication/tools/blob/master/js/jquery.picadiff-0.7.1.js"></script>
+    <script>
+      $(document).ready(function(){
+        
+        // 변환 버튼
+        $('#convertBtn').on('click', function(){
+          var $btn = $(this).button('loading');
+          $("#oneResult div").prettyTextDiff({
+            originalContent: $(".original").val().replace(/</gi, "&lt;").replace(/>/gi, "&gt;").replace(/ /gi, "&nbsp;"),
+            changedContent: $(".changed").val().replace(/</gi, "&lt;").replace(/>/gi, "&gt;").replace(/ /gi, "&nbsp;"),
+            diffContainer: ".diff"
+          });
+          $('.picadiff').picadiff({
+              leftContent: $(".original").val().replace(/</gi, "&lt;").replace(/>/gi, "&gt;").replace(/\n/gi, "<br>")+"<br> <br>",
+              rightContent: $(".changed").val().replace(/</gi, "&lt;").replace(/>/gi, "&gt;").replace(/\n/gi, "<br>")+"<br> <br>",
+              lineLength: 5000,
+              timeout: 1
+            });
+          $btn.button('reset');
+        });
+        
+        // 문서종류 라디오 버튼
+        $("#codeType :input").change(function() {
+          var codeType = $(":radio[name='codeType']:checked").val();
+          if(codeType == "one"){
+            $("#oneResult").show();
+            $("#twoResult").hide();
+          }else if (codeType == "two"){
+            $("#oneResult").hide();
+            $("#twoResult").show();
+          }
+        });
+        
+        $(".left").scroll(function(){
+          $(".right").scrollLeft($(this).scrollLeft());
+        });
+        
+        $(".right").scroll(function(){
+          $(".left").scrollLeft($(this).scrollLeft());
+        });
+        
+      });
+    </script>
   </head>
   <body>
     <main>
@@ -109,57 +152,5 @@
     </main>
     
     <footer></footer>
-    
-    <script src="https://github.com/wepplication/tools/blob/master/js/include.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://github.com/wepplication/tools/blob/master/js/common.js"></script>
-    
-    <script src="https://github.com/wepplication/tools/blob/master/js/diff_match_patch.js"></script>
-    <script src="https://github.com/wepplication/tools/blob/master/js/jquery.pretty-text-diff.min.js"></script>
-    <script src="https://github.com/wepplication/tools/blob/master/js/jquery.picadiff-0.7.1.js"></script>
-    <script>
-      $(document).ready(function(){
-        
-        // 변환 버튼
-        $('#convertBtn').on('click', function(){
-          var $btn = $(this).button('loading');
-          $("#oneResult div").prettyTextDiff({
-            originalContent: $(".original").val().replace(/</gi, "&lt;").replace(/>/gi, "&gt;").replace(/ /gi, "&nbsp;"),
-            changedContent: $(".changed").val().replace(/</gi, "&lt;").replace(/>/gi, "&gt;").replace(/ /gi, "&nbsp;"),
-            diffContainer: ".diff"
-          });
-          $('.picadiff').picadiff({
-              leftContent: $(".original").val().replace(/</gi, "&lt;").replace(/>/gi, "&gt;").replace(/\n/gi, "<br>")+"<br> <br>",
-              rightContent: $(".changed").val().replace(/</gi, "&lt;").replace(/>/gi, "&gt;").replace(/\n/gi, "<br>")+"<br> <br>",
-              lineLength: 5000,
-              timeout: 1
-            });
-          $btn.button('reset');
-        });
-        
-        // 문서종류 라디오 버튼
-        $("#codeType :input").change(function() {
-          var codeType = $(":radio[name='codeType']:checked").val();
-          if(codeType == "one"){
-            $("#oneResult").show();
-            $("#twoResult").hide();
-          }else if (codeType == "two"){
-            $("#oneResult").hide();
-            $("#twoResult").show();
-          }
-        });
-        
-        $(".left").scroll(function(){
-          $(".right").scrollLeft($(this).scrollLeft());
-        });
-        
-        $(".right").scroll(function(){
-          $(".left").scrollLeft($(this).scrollLeft());
-        });
-        
-      });
-    </script>
   </body>
 </html>
